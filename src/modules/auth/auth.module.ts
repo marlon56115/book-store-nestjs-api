@@ -12,7 +12,9 @@ import { Configurations } from '../../config/config.keys';
 
 @Module({
    controllers: [AuthController],
+
    providers: [AuthService, ConfigService, JwtStrategy],
+
    imports: [
       TypeOrmModule.forFeature([AuthRepository]),
       PassportModule.register({ defaultStrategy: 'jwt' }),
@@ -29,6 +31,7 @@ import { Configurations } from '../../config/config.keys';
          }
       })
    ],
+   
    exports: [JwtStrategy, PassportModule]
 })
 export class AuthModule { }

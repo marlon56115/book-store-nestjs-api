@@ -10,12 +10,19 @@ import { RoleType } from '../role/roletype.enum';
 
 @Injectable()
 export class AuthService {
+
    constructor(
       @InjectRepository(AuthRepository)
       private readonly _authRepository: AuthRepository,
       private readonly _jwtService: JwtService
    ) { }
 
+   /**
+    * Metodo para Registrarse, si el usuario no existe entonces
+    * Usa el metodo registrar creado en el AuthRepositori
+    * @param singupDto 
+    * @returns 
+    */
    async singup(singupDto: SingUpDto): Promise<void> {
       const { username, email } = singupDto;
       const userExist = Boolean(await this._authRepository.findOne({
@@ -28,18 +35,21 @@ export class AuthService {
       return this._authRepository.singUp(singupDto);
    }
 
+   /**
+    * Metodo para iniciar sesion, si el usuario existe entonces
+    * crea un token de autenticacion y lo devuelve
+    * @param singinDto Metodo para Iniciar sesion
+    * @returns 
+    */
    async singin(singinDto: SingInDto): Promise<{ token: string }> {
       const { username, password } = singinDto;
       const user = await this._authRepository.findOne({
          where: { username }
       });
-
       if (!user) {
          throw new NotFoundException('user doest not exist');
       }
-
       const isMatch = await compare(password, user.password);
-
       if (!isMatch) {
          throw new UnauthorizedException('bad credentials');
       }

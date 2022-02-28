@@ -10,6 +10,11 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
 
+   /**
+    * 
+    * @param @Inject _configService:ConfigService
+    * @param _authRepository:AuthRepository
+    */
    constructor(
       private readonly _configService: ConfigService,
       @InjectRepository(AuthRepository)
@@ -20,6 +25,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       });
    }
 
+   /**
+    * metodo para validar que existe un usuario, devuelve
+    * IJwtPaiload
+    * @param payload:IJwtPayload
+    * @returns 
+    */
    async validate(payload: IJwtPayload) {
       const { username } = payload;
       const user = await this._authRepository.findOne({
@@ -30,6 +41,5 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
          throw new UnauthorizedException();
       }
       return payload;
-
    }
 }

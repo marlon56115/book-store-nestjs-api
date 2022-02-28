@@ -4,11 +4,12 @@ import { isNotEmpty, IsNotEmpty, isString, IsString } from "class-validator";
  * usamos el modelo User tiene demasiados campos que no tilizariamos
  */
 export class SingInDto {
+
    @IsNotEmpty()
    @IsString()
    username: string;
+   
    @IsNotEmpty()
    @IsString()
    password: string
-
 }
