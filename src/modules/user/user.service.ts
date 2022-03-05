@@ -5,6 +5,8 @@ import { User } from './user.entity';
 import { UserDetails } from './user.details.entity';
 import { getConnection } from 'typeorm';
 import { Role } from '../role/role.entity';
+import { RoleRepository } from '../role/role.repository';
+import { status } from 'src/shared/entity-status.num';
 
 @Injectable()
 export class UserService {
@@ -12,6 +14,8 @@ export class UserService {
    constructor(
       @InjectRepository(UserRepository)
       private readonly _userRepository: UserRepository,
+      @InjectRepository(RoleRepository)
+      private readonly _roleRepository: RoleRepository,
    ) { }
 
    /**
@@ -23,7 +27,7 @@ export class UserService {
       if (!id) {
          throw new BadRequestException("id must be send");
       }
-      const user: User = await this._userRepository.findOne(id, { where: { status: 'ACTIVE' } });
+      const user: User = await this._userRepository.findOne(id, { where: { status: status.ACTVE } });
       if (!user) {
          throw new NotFoundException();
       }
@@ -36,7 +40,7 @@ export class UserService {
     */
    async getAll(): Promise<User[]> {
    
-      const users: User[] = await this._userRepository.find({ where: { status: 'ACTIVE' } });
+      const users: User[] = await this._userRepository.find({ where: { status: status.ACTVE} });
       return users;
    }
 
@@ -70,12 +74,37 @@ export class UserService {
     * @param id 
     */
    async delete(id: number): Promise<void> {
-      const userExist = await this._userRepository.findOne(id, { where: { status: 'ACTIVE' } });
+      const userExist = await this._userRepository.findOne(id, { where: { status: status.ACTVE } });
 
       if (!userExist) {
          throw new NotFoundException();
       }
 
-      await this._userRepository.update(id, { status: 'INACTIVE' });
+      await this._userRepository.update(id, { status: status.INACTIVE });
+   }
+
+   /**
+    * Metodo para asignar un role a un usuario
+    * @param userId 
+    * @param roleId 
+    * @returns 
+    */
+   async setRoleToUser(userId: number, roleId: number) {
+      const userExist = await this._userRepository.findOne(userId, { where: { status: status.ACTVE } });
+      if (!userExist) {
+         throw new NotFoundException();
+      }
+
+      const roleExist = await this._roleRepository.findOne(roleId, { where: { status: status.ACTVE } });
+      if (!roleExist) {
+         throw new NotFoundException('Role does not exist');
+      }
+
+      userExist.roles.push(roleExist);
+      await this._userRepository.save(userExist);
+
+      return true;
+
+
    }
 }

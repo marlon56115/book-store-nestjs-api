@@ -5,10 +5,11 @@ import { UserService } from './user.service';
 import { SharedModule } from '../../shared/shared.module';
 import { UserController } from './user.controller';
 import { AuthModule } from '../auth/auth.module';
+import { RoleRepository } from '../role/role.repository';
 
 @Module({
    //al importar el sharedModule puedo hacer inyeccion de dependencias del mapper servide en mi modulko usuario
-   imports:[TypeOrmModule.forFeature([UserRepository]),SharedModule,AuthModule],
+   imports:[TypeOrmModule.forFeature([UserRepository,RoleRepository]),SharedModule,AuthModule],
    providers: [UserService],
    controllers:[UserController]
 })
