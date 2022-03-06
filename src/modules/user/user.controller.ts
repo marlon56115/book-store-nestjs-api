@@ -2,13 +2,19 @@ import { Controller, Param, Get, Post, Body, Patch, Delete, ParseIntPipe, UseGua
 import { UserService } from './user.service';
 import { User } from './user.entity';
 import { AuthGuard } from '@nestjs/passport';
+import { Roles } from '../role/decorators/role.decorator';
+import { RoleGuard } from '../role/guards/role.guard';
 
 @Controller('users')
 export class UserController {
    constructor(private readonly _userService: UserService) { }
 
+
    @Get(':id')
-   async getUser(@Param('id',ParseIntPipe) id: number): Promise<User> {
+   //solo se van a permitir esos roles
+   @Roles('ADMIN', 'GENERAL')
+   @UseGuards(AuthGuard(),RoleGuard)
+   async getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
       const user = await this._userService.get(id);
       return user;
    }
@@ -33,7 +39,7 @@ export class UserController {
    }
 
    @Delete(':id')
-   async deleteUser(@Param('id', ParseIntPipe) id:number) {
+   async deleteUser(@Param('id', ParseIntPipe) id: number) {
       await this._userService.delete(id);
       return true;
    }

@@ -6,7 +6,7 @@ import { UserDetails } from './user.details.entity';
 import { getConnection } from 'typeorm';
 import { Role } from '../role/role.entity';
 import { RoleRepository } from '../role/role.repository';
-import { status } from 'src/shared/entity-status.num';
+import { status } from '../../shared/entity-status.num';
 
 @Injectable()
 export class UserService {
