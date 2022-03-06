@@ -1,17 +1,17 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { Configurations } from './config/config.keys';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { DatabaseModule } from './database/database.module';
 import { UserModule } from './modules/user/user.module';
 import { RoleModule } from './modules/role/role.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { BookModule } from './modules/book/book.module';
 
 @Module({
-  imports: [ConfigModule, DatabaseModule, UserModule, RoleModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [ConfigModule, DatabaseModule, UserModule, RoleModule, AuthModule, BookModule],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {
    //static porque no es necesario instanciar la clase para acceder a ella

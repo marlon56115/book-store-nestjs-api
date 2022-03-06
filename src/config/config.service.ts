@@ -31,7 +31,11 @@ export class ConfigService {
       }
    }
    
-   //para obtener una variable
+   /**
+    * para obtener una variable de entorno
+    * @param key 
+    * @returns 
+    */
    get(key:string):string {
       return this.envConfig[key];
    }
