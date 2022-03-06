@@ -7,6 +7,8 @@ import { SingInDto } from './dto/singin.dto';
 import { compare } from 'bcryptjs';
 import { IJwtPayload } from './jwt-payload.interface';
 import { RoleType } from '../role/roletype.enum';
+import { plainToClass } from 'class-transformer';
+import { LoggedInDto } from './dto/logged-in.dto';
 
 @Injectable()
 export class AuthService {
@@ -23,7 +25,7 @@ export class AuthService {
     * @param singupDto 
     * @returns 
     */
-   async singup(singupDto: SingUpDto): Promise<void> {
+   async singup(singupDto: SingUpDto): Promise<boolean> {
       const { username, email } = singupDto;
       const userExist = Boolean(await this._authRepository.findOne({
          where: [{ 'username': username }, { 'email': email }]
@@ -41,7 +43,7 @@ export class AuthService {
     * @param singinDto Metodo para Iniciar sesion
     * @returns 
     */
-   async singin(singinDto: SingInDto): Promise<{ token: string }> {
+   async singin(singinDto: SingInDto): Promise<LoggedInDto> {
       const { username, password } = singinDto;
       const user = await this._authRepository.findOne({
          where: { username }
@@ -60,7 +62,7 @@ export class AuthService {
          username: user.username,
          roles: user.roles.map(r => r.name as RoleType)
       }
-      const token = await this._jwtService.sign(payload);
-      return { token }
+      const token =  this._jwtService.sign(payload);
+      return plainToClass(LoggedInDto, { token,user});
    }
 }

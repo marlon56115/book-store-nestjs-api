@@ -2,6 +2,7 @@ import { Body, Controller, Post, UsePipes, ValidationPipe } from '@nestjs/common
 import { SingUpDto } from './dto/singup.dto';
 import { AuthService } from './auth.service';
 import { SingInDto } from './dto/singin.dto';
+import { LoggedInDto } from './dto/logged-in.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -18,7 +19,7 @@ export class AuthController {
     */
    @Post('/singup')
    @UsePipes(ValidationPipe)
-   async singup(@Body() singUpDto: SingUpDto):Promise<void> {
+    singup(@Body() singUpDto: SingUpDto):Promise<boolean> {
       return this._authService.singup(singUpDto);
    }
 
@@ -29,7 +30,7 @@ export class AuthController {
     */
    @Post('/singin')
    @UsePipes(ValidationPipe)
-   async singin(@Body() singInDto: SingInDto): Promise<{token:string}> {
+    singin(@Body() singInDto: SingInDto): Promise<LoggedInDto> {
       return this._authService.singin(singInDto);
    }
 }
