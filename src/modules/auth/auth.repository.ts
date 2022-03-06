@@ -32,5 +32,6 @@ export class AuthRepository extends Repository<User>{
       user.password = await hash(password, salt);
       //guardar usuario
       await user.save();
+      return true;
    }
 }
